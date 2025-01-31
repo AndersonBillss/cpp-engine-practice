@@ -1,1 +1,1 @@
-make && ./engine.exe
+make clean && make && ./engine.exe
