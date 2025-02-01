@@ -5,6 +5,10 @@
 #include <vector>
 using std::cout, std::endl, std::string, std::vector, std::to_string;
 
+template <typename T>
+inline string objectString(const T& item);
+
+
 inline string stringify(const char * item) {
     return string(item);
 }
@@ -21,23 +25,36 @@ inline string stringify(const double& item) {
     return "\033[33m" + to_string(item) + "\033[0m";
 }
 template <typename T>
+inline string stringify(const T& item){
+    return to_string(item);
+}
+
+inline string objectString(const char * item){
+    return "\033[32m\"" + stringify(item) + "\"\033[0m";
+}
+inline string objectString(const string& item){
+    return "\033[32m\"" + stringify(item) + "\"\033[0m";
+}
+
+template <typename T>
 inline string stringify(const vector<T>& vec) {
     string finalString = "";
-    finalString += "[";
+    finalString += "[ ";
     for(auto i=0; i<vec.size(); i++){
         auto item = vec[i];
         bool isLast = i == vec.size()-1;
-        finalString += stringify(item);
+        finalString += objectString(item);
         if(!isLast){
         finalString += ", ";
         }
     }
-    finalString += "]";
+    finalString += " ]";
     return finalString;
 }
+
 template <typename T>
-inline string stringify(const T& item){
-    return to_string(item);
+inline string objectString(const T& item){
+    return stringify(item);
 }
 
 template <typename T>
