@@ -40,7 +40,7 @@ template <typename T>
 inline string stringify(const vector<T>& vec) {
     string finalString = "";
     finalString += "[ ";
-    for(auto i=0; i<vec.size(); i++){
+    for(size_t i=0; i<vec.size(); i++){
         auto item = vec[i];
         bool isLast = i == vec.size()-1;
         finalString += objectString(item);

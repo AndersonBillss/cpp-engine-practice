@@ -2,7 +2,7 @@
 CXX = g++
 
 # Compiler Flags
-CXXFLAGS = -IC:/msys64/mingw64/include -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32 -Iinclude
+CXXFLAGS = -IC:/msys64/mingw64/include -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32 -Iinclude -Wall
 
 # Executable Name
 TARGET = engine
@@ -14,8 +14,15 @@ OBJ_DIR = obj
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
+all:
+	make build 
+	make run
+
+run:
+	./$(TARGET).exe
+
 # Rule to build the final executable
-$(TARGET): $(OBJ)
+build: $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ)
 
 # Rule to compile .cpp files to .o files inside obj/
