@@ -2,7 +2,8 @@
 CXX = g++
 
 # Compiler Flags
-CXXFLAGS = -IC:/msys64/mingw64/include -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32 -Iinclude -Wall
+OBJFLAGS = -IC:/msys64/mingw64/include -Iinclude -Wall
+BINFLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32
 
 # Executable Name
 TARGET = engine
@@ -26,11 +27,11 @@ run: build
 
 # Build the executable
 build: $(BIN_DIR) $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ)
+	$(CXX) -o $(BIN_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ) $(BINFLAGS)
 
 # Compile C++ files to .o files inside obj/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(OBJFLAGS) -c $< -o $@
 
 # Ensure directories exist
 $(OBJ_DIR):
