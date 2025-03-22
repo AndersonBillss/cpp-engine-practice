@@ -6,33 +6,39 @@ CXXFLAGS = -IC:/msys64/mingw64/include -LC:/msys64/mingw64/lib -lglew32 -lglfw3 
 
 # Executable Name
 TARGET = engine
+EXE_SUFFIX := .exe
 
-# Source and Object Files
+# Directories
 SRC_DIR = src
 OBJ_DIR = obj
+BIN_DIR = bin
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
-all:
-	make build 
-	make run
+# Default target
+all: build run
 
-run:
-	./$(TARGET).exe
+# Run the executable
+run: build
+	@echo "Running $(TARGET)..."
+	$(BIN_DIR)/$(TARGET)$(EXE_SUFFIX)
 
-# Rule to build the final executable
-build: $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ)
+# Build the executable
+build: $(BIN_DIR) $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ)
 
-# Rule to compile .cpp files to .o files inside obj/
+# Compile C++ files to .o files inside obj/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Create obj/ directory if it doesn’t exist
+# Ensure directories exist
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-# Clean rule to remove compiled files
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+# Clean compiled files but keep directories
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
