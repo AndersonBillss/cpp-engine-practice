@@ -35,10 +35,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 
 # Ensure directories exist
 $(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+	mkdir $(OBJ_DIR)
 
 $(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+	mkdir $(BIN_DIR)
 
 # Clean compiled files but keep directories
 clean:
