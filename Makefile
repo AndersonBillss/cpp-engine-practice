@@ -35,11 +35,12 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 
 # Ensure directories exist
 $(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+	mkdir $(OBJ_DIR) 2> NUL || true
 
 $(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+	mkdir $(BIN_DIR) 2> NUL || true
 
 # Clean compiled files but keep directories
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	if exist $(OBJ_DIR) rmdir /s /q $(OBJ_DIR)
+	if exist $(BIN_DIR) rmdir /s /q $(BIN_DIR)
