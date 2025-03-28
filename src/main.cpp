@@ -1,7 +1,7 @@
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include <cmath>
+#include "window.h"
 
 // Vertex Shader (applies manual rotation)
 const char* vertexShaderSource = R"(
@@ -33,41 +33,11 @@ void main() {
 }
 )";
 
-void processInput(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
 
 int main() {
-    // Initialize GLFW
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW\n";
-        return -1;
-    }
-
-    // OpenGL 3.3 Core Profile
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     // Create window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Rotating Cube", NULL, NULL);
-    if (!window) {
-        std::cerr << "Failed to create GLFW window\n";
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-
-    // Initialize GLEW
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "Failed to initialize GLEW\n";
-        return -1;
-    }
-
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
+    Window* window = new Window(800, 600, "Rotating Cube");
+    
 
     // Define Cube Vertices
     float vertices[] = {
@@ -136,21 +106,21 @@ int main() {
     int angleLoc = glGetUniformLocation(shaderProgram, "angle");
 
     // Main loop
-    while (!glfwWindowShouldClose(window)) {
-        processInput(window);
+    while (!window->shouldClose()) {
+        window->processInput();
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(shaderProgram);
 
         // Set rotation angle (based on time)
-        float angle = (float)glfwGetTime();  // Radians
+        float angle = (float)window->getTime();  // Radians
         glUniform1f(angleLoc, angle);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window->swapBuffers();
+        window->pollEvents();
     }
 
     // Cleanup
@@ -159,7 +129,6 @@ int main() {
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    delete window;
     return 0;
 }
