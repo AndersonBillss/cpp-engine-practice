@@ -1,6 +1,3 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <string>
 #include "window.h"
 #include <iostream>
 using std::string, std::cerr;
@@ -32,11 +29,13 @@ Window::Window(int width, int height, const char* title){
         std::cerr << "Failed to initialize GLEW\n";
         exit(-1);
     }
+    _ctx = new Ctx();
 }
 
 Window::~Window(){
     glfwDestroyWindow(_window);
     glfwTerminate();
+    delete _ctx;
 }
 
 bool Window::shouldClose() const {
@@ -61,6 +60,17 @@ void Window::processInput() {
 }
 void Window::close() {
     glfwSetWindowShouldClose(_window, true);
+}
+
+Ctx* Window::getCtx(){
+    return _ctx;
+}
+
+void Window::process(function<void()> callback) {
+    processInput();
+    _ctx->process(callback);
+    swapBuffers();
+    pollEvents();
 }
 
 

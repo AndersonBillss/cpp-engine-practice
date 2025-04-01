@@ -1,9 +1,10 @@
 #pragma once
-#ifndef WINDOW_H
-#define WINDOW_H
+#include "ctx.h"
 #include <GLFW/glfw3.h>
 #include <string>
 using std::string;
+#include <functional>
+using std::function;
 
 class Window {
 public:
@@ -19,8 +20,11 @@ public:
     void processInput();
     void close();
 
+    Ctx* getCtx();
+
+    void process(function<void()> callback);
+
 private:
     GLFWwindow* _window;
+    Ctx* _ctx;
 };
-
-#endif

@@ -1,6 +1,5 @@
-#include <GL/glew.h>
-#include <iostream>
-#include <cmath>
+#include <vector>
+using std::vector;
 #include "window.h"
 
 // Vertex Shader (applies manual rotation)
@@ -33,14 +32,9 @@ void main() {
 }
 )";
 
-
 int main() {
-    // Create window
-    Window* window = new Window(800, 600, "Rotating Cube");
-    
-
     // Define Cube Vertices
-    float vertices[] = {
+    vector<float> vertices = {
         // Front Face
         -0.5f, -0.5f,  0.5f,
          0.5f, -0.5f,  0.5f,
@@ -53,7 +47,7 @@ int main() {
         -0.5f,  0.5f, -0.5f,
     };
 
-    unsigned int indices[] = {
+    vector<unsigned int> indices = {
         // Front
         0, 1, 2, 2, 3, 0,
         // Back
@@ -68,67 +62,22 @@ int main() {
         0, 1, 5, 5, 4, 0,
     };
 
-    // Create VAO, VBO, EBO
-    unsigned int VAO, VBO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
+    // Create window
+    Window* window = new Window(800, 600, "Rotating Cube");
+    Ctx* ctx = window->getCtx();
+    ctx->bindBufferData(vertices, indices);
+    ctx->addShader(vertexShaderSource, fragmentShaderSource);
     
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Compile Shader Program
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    // Get uniform location for rotation angle
-    int angleLoc = glGetUniformLocation(shaderProgram, "angle");
+    unsigned int angleLoc = ctx->getShaderVariableLoc("angle");
+    auto process = [&]() {
+        float angle = (float)window->getTime();  // Radians
+        ctx->setShaderVariable(angleLoc, angle);
+    };
 
     // Main loop
-    while (!window->shouldClose()) {
-        window->processInput();
-        
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shaderProgram);
-
-        // Set rotation angle (based on time)
-        float angle = (float)window->getTime();  // Radians
-        glUniform1f(angleLoc, angle);
-
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-        window->swapBuffers();
-        window->pollEvents();
-    }
+    while (!window->shouldClose()) window->process(process);
 
     // Cleanup
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
-
     delete window;
     return 0;
 }
