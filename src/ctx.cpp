@@ -1,4 +1,8 @@
 #include "ctx.h"
+#include <fstream>  // Required for std::ifstream
+using std::ifstream;
+#include <sstream>  // Required for std::stringstream
+using std::stringstream;
 #include <iostream>
 using std::cerr;
 
@@ -29,7 +33,13 @@ void Ctx::bindBufferData(const vector<float>& vertices, const vector<unsigned in
     glEnableVertexAttribArray(0);
 }
 
-void Ctx::addShader(const char*& vertexShaderSource, const char*& fragmentShaderSource){
+void Ctx::addShaderFiles(const string& vertexShaderPath, const string& fragmentShaderPath){
+    string vertexShaderSource = _readFileData("src\\shaders\\" + vertexShaderPath);
+    string fragmentShaderSource = _readFileData("src\\shaders\\" + fragmentShaderPath);
+    addShaders(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
+}
+
+void Ctx::addShaders(const char* vertexShaderSource, const char* fragmentShaderSource){
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -80,4 +90,15 @@ void Ctx::_checkProgramLinking() {
         glGetProgramInfoLog(_shaderProgram, 1024, NULL, infoLog);
         cerr << "Shader Linking Error:\n" << infoLog << "\n";
     }
+}
+
+string Ctx::_readFileData(const string& filepath) {
+    ifstream shaderFile(filepath);
+    if (!shaderFile) {
+        cerr << "Failed to open shader file: " << filepath << "\n";
+        return "";
+    }
+    stringstream shaderStream;
+    shaderStream << shaderFile.rdbuf();
+    return shaderStream.str();
 }
