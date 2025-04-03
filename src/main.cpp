@@ -1,6 +1,28 @@
 #include <vector>
 using std::vector;
 #include "window.h"
+#include "core.h"
+
+float currentGreen = 0;
+int greenIncreasing = -1;
+float lastTime = 0;
+float getGreen(float time){
+    float deltaTime = time - lastTime;
+    lastTime = time;
+    if(lastTime == 0) return 0;
+
+    float nextGreen = currentGreen + (greenIncreasing * deltaTime);
+    if(nextGreen < 0){
+        greenIncreasing = 1;
+        return currentGreen;
+    }
+    if(nextGreen > 1){
+        greenIncreasing = -1;
+        return currentGreen;
+    }
+    currentGreen = nextGreen;
+    return nextGreen;
+}
 
 int main() {
     vector<float> triangleVertices = {
@@ -20,11 +42,17 @@ int main() {
     Ctx* ctx = window->getCtx();
     ctx->bindBufferData(triangleVertices, triangleIndices);
     ctx->addShaderFiles(vertexShaderPath, fragmentShaderPath);
+
+    lastTime = (float)window->getTime();
     
     unsigned int angleLoc = ctx->getShaderVariableLoc("angle");
+    unsigned int greenColor = ctx->getShaderVariableLoc("greenValue");
     auto process = [&]() {
-        float angle = (float)window->getTime();  // Radians
+        float time = (float)window->getTime();
+        float angle = time;
+        float green = getGreen(time);
         ctx->setShaderVariable(angleLoc, angle);
+        ctx->setShaderVariable(greenColor, green);
     };
 
     // Main loop
