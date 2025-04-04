@@ -17,9 +17,7 @@ int main() {
     string vertexShaderPath = "vertex_shader.glsl";
     string fragmentShaderPath = "fragment_shader.glsl";
     
-    // Create window
     Window* window = new Window(800, 600, "Rotating Triangle");
-    // Create  mesh
     Mesh mesh(triangleVertices, triangleIndices, {3, 3});
     Shader shader(vertexShaderPath, fragmentShaderPath);
     
