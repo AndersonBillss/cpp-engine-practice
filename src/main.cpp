@@ -17,7 +17,7 @@ int main() {
     string vertexShaderPath = "vertex_shader.glsl";
     string fragmentShaderPath = "fragment_shader.glsl";
     
-    Window* window = new Window(800, 600, "Rotating Triangle");
+    Window window(800, 600, "Rotating Triangle");
     Mesh mesh(triangleVertices, triangleIndices, {3, 3});
     Shader shader(vertexShaderPath, fragmentShaderPath);
     
@@ -26,16 +26,14 @@ int main() {
         shader.use();
         mesh.use();
 
-        float time = (float)window->getTime();
+        float time = (float)window.getTime();
         float angle = time;
 
         shaderAngle.set(angle);
     };
 
     // Main loop
-    while (!window->shouldClose()) window->process(process);
+    while (!window.shouldClose()) window.process(process);
 
-    // Cleanup
-    delete window;
     return 0;
 }
