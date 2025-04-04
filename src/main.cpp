@@ -23,7 +23,7 @@ int main() {
     Mesh mesh(triangleVertices, triangleIndices, {3, 3});
     Shader shader(vertexShaderPath, fragmentShaderPath);
     
-    unsigned int angleLoc = shader.getUniformLocation("angle");
+    Shader::Uniform<float> shaderAngle(shader, "angle");
     auto process = [&]() {
         shader.use();
         mesh.use();
@@ -31,7 +31,7 @@ int main() {
         float time = (float)window->getTime();
         float angle = time;
 
-        shader.setUniform(angleLoc, angle);
+        shaderAngle.set(angle);
     };
 
     // Main loop

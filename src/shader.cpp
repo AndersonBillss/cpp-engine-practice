@@ -5,6 +5,8 @@ using std::ifstream;
 using std::stringstream;
 #include <iostream>
 using std::cerr;
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(string vertexPath, string fragmentPath){
     string vertexShaderSource = _readFileData("src\\shaders\\" + vertexPath);
@@ -33,10 +35,6 @@ void Shader::_addShaders(const char* vertexShaderSource, const char* fragmentSha
     glDeleteShader(fragmentShader);
     _checkShaderCompilation();
     _checkProgramLinking();
-}
-
-int Shader::getUniformLocation(const char* variable){
-    return glGetUniformLocation(_shaderProgram, variable);
 }
 
 void Shader::use(){
