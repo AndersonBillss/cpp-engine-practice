@@ -45,8 +45,8 @@ int main() {
 
     lastTime = (float)window->getTime();
     
-    unsigned int angleLoc = ctx->getShaderVariableLoc("angle");
-    unsigned int greenColor = ctx->getShaderVariableLoc("greenValue");
+    unsigned int angleLoc = ctx->getUniformLocation("angle");
+    unsigned int greenColor = ctx->getUniformLocation("greenValue");
     auto process = [&]() {
         float time = (float)window->getTime();
         float angle = time;

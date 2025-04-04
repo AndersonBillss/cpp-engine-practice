@@ -13,11 +13,15 @@ public:
     Ctx();
     ~Ctx();
     
-    void bindBufferData(const vector<float>& vertices, const vector<unsigned int>& indices);
+    void bindBufferData(
+        const vector<float>& vertices,
+        const vector<unsigned int>& indices,
+        const vector<unsigned int>& attributes = vector<unsigned int>{3}
+    );
     void addShaderFiles(const string& vertexShaderPath, const string& fragmentShaderPath);
     void addShaders(const char* vertexShaderSource, const char* fragmentShaderSource);
 
-    int getShaderVariableLoc(const char* variable);
+    int getUniformLocation(const char* variable);
     
     template <class T>
     void setShaderVariable(int varLoc, T value) {

@@ -22,15 +22,28 @@ Ctx::~Ctx(){
     glDeleteProgram(_shaderProgram);
 }
 
-void Ctx::bindBufferData(const vector<float>& vertices, const vector<unsigned int>& indices){
+void Ctx::bindBufferData(
+    const vector<float>& vertices, 
+    const vector<unsigned int>& indices,
+    const vector<unsigned int>& attributes
+){
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    int attributesSize = 0;
+    for(unsigned int attr : attributes) attributesSize += attr;
+
+    // Enable and define each vertex attribute
+    int offset = 0;
+    for(unsigned int i = 0; i < attributes.size(); i++){
+        unsigned int attr = attributes[i];
+        glVertexAttribPointer(i, attr, GL_FLOAT, GL_FALSE, attributesSize * sizeof(float), (void*)(offset * sizeof(float)));
+        glEnableVertexAttribArray(i);
+        offset += attr;
+    }
 }
 
 void Ctx::addShaderFiles(const string& vertexShaderPath, const string& fragmentShaderPath){
@@ -59,7 +72,7 @@ void Ctx::addShaders(const char* vertexShaderSource, const char* fragmentShaderS
     _checkProgramLinking();
 }
 
-int Ctx::getShaderVariableLoc(const char* variable){
+int Ctx::getUniformLocation(const char* variable){
     return glGetUniformLocation(_shaderProgram, variable);
 }
 
