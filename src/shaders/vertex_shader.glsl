@@ -1,7 +1,8 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
 
-out vec4 vertexColor; // specify a color output to the fragment shader
+out vec3 ourColor;
 
 uniform float angle;
 void main() {
@@ -17,5 +18,5 @@ void main() {
     );
 
     gl_Position = rotation * vec4(aPos, 1.0);
-    vertexColor = vec4(0.13, 0.09, 0.3, 1.0);
+    ourColor = aColor;
 };

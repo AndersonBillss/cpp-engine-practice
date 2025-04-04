@@ -29,13 +29,11 @@ Window::Window(int width, int height, const char* title){
         std::cerr << "Failed to initialize GLEW\n";
         exit(-1);
     }
-    _ctx = new Ctx();
 }
 
 Window::~Window(){
     glfwDestroyWindow(_window);
     glfwTerminate();
-    delete _ctx;
 }
 
 bool Window::shouldClose() const {
@@ -62,13 +60,10 @@ void Window::close() {
     glfwSetWindowShouldClose(_window, true);
 }
 
-Ctx* Window::getCtx(){
-    return _ctx;
-}
-
 void Window::process(function<void()> callback) {
     processInput();
-    _ctx->process(callback);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    callback();
     swapBuffers();
     pollEvents();
 }

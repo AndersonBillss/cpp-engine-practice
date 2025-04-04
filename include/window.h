@@ -1,5 +1,5 @@
 #pragma once
-#include "ctx.h"
+#include "mesh.h"
 #include <GLFW/glfw3.h>
 #include <string>
 using std::string;
@@ -20,11 +20,8 @@ public:
     void processInput();
     void close();
 
-    Ctx* getCtx();
-
     void process(function<void()> callback);
 
 private:
     GLFWwindow* _window;
-    Ctx* _ctx;
 };
