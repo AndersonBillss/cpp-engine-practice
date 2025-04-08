@@ -1,6 +1,8 @@
 #include <vector>
 using std::vector;
 
+#include <GL/glew.h>
+
 #include "window.h"
 #include "shader.h"
 #include "texture2D.h"
@@ -29,6 +31,7 @@ int main() {
     Mesh mesh(rectangleVertices, rectangleIndices, attributes);
     Shader shader(vertexShaderPath, fragmentShaderPath);
     Texture2D texture(shader);
+    texture.useMipmaps();
     texture.addTexture("wall.jpg", "texture1");
     texture.addTexture("opengl-1-logo-png-transparent.png", "texture2");
 

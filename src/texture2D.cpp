@@ -21,10 +21,17 @@ void Texture2D::addTexture(const string& filePath, const string& textureName) {
     glGenTextures(1, &texture);  
     glBindTexture(GL_TEXTURE_2D, texture);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    if(_usingMipmaps){
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    } else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
     
     int width, height, nrChannels;
 
@@ -42,7 +49,7 @@ void Texture2D::addTexture(const string& filePath, const string& textureName) {
             exit(EXIT_FAILURE);
         }
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        if(_usingMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
     } else {
         std::cout << "Failed to load texture" << std::endl;
     }
@@ -52,6 +59,10 @@ void Texture2D::addTexture(const string& filePath, const string& textureName) {
     tex.set(_textures.size());
 
     _textures.push_back(texture);
+}
+
+void Texture2D::useMipmaps(){
+    _usingMipmaps = true;
 }
 
 void Texture2D::use(){
