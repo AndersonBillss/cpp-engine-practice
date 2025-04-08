@@ -27,8 +27,7 @@ public:
     private:
     GLuint _shaderProgram;
     
-    void _checkShaderCompilation();
-    void _checkProgramLinking();
+    void _checkShaderCompilation(GLuint shader, const string& type);
     
     void _addShaders(const char* vertexShaderSource, const char* fragmentShaderSource);
     string _readFileData(const string& filePath);

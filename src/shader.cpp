@@ -21,10 +21,12 @@ void Shader::_addShaders(const char* vertexShaderSource, const char* fragmentSha
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
+    _checkShaderCompilation(vertexShader, "VERTEX");
 
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
+    _checkShaderCompilation(fragmentShader, "FRAGMENT");
 
     _shaderProgram = glCreateProgram();
     glAttachShader(_shaderProgram, vertexShader);
@@ -33,8 +35,6 @@ void Shader::_addShaders(const char* vertexShaderSource, const char* fragmentSha
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-    _checkShaderCompilation();
-    _checkProgramLinking();
 }
 
 void Shader::use(){
@@ -53,22 +53,12 @@ string Shader::_readFileData(const string& filePath){
 }
 
 
-void Shader::_checkShaderCompilation() {
+void Shader::_checkShaderCompilation(GLuint shader, const string& type) {
     GLint success;
     GLchar infoLog[1024];
-    glGetShaderiv(_shaderProgram, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(_shaderProgram, 1024, NULL, infoLog);
-        cerr << "Shader Compilation Error:\n" << infoLog << "\n";
-    }
-}
-
-void Shader::_checkProgramLinking() {
-    GLint success;
-    GLchar infoLog[1024];
-    glGetProgramiv(_shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(_shaderProgram, 1024, NULL, infoLog);
-        cerr << "Shader Linking Error:\n" << infoLog << "\n";
+        glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+        cerr << type << " Shader Compilation Error:\n" << infoLog << "\n";
     }
 }
