@@ -20,18 +20,20 @@ void Texture2D::addTexture(const string& filePath, const string& textureName) {
     unsigned int texture;
     glGenTextures(1, &texture);  
     glBindTexture(GL_TEXTURE_2D, texture);
-    
-    if(_usingMipmaps){
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    GLint minFilter;
+    GLint maxFilter;
+    if(_usingBilinearFiltering){
+        minFilter = _usingMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
+        maxFilter = GL_LINEAR;
     } else {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        minFilter = _usingMipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
+        maxFilter = GL_NEAREST;
     }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);
     
     int width, height, nrChannels;
 
@@ -63,6 +65,9 @@ void Texture2D::addTexture(const string& filePath, const string& textureName) {
 
 void Texture2D::useMipmaps(){
     _usingMipmaps = true;
+}
+void Texture2D::useBilinearFiltering(){
+    _usingBilinearFiltering = true;
 }
 
 void Texture2D::use(){
