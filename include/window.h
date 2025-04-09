@@ -12,7 +12,8 @@ public:
     ~Window();
 
     bool shouldClose() const;
-    double getTime();
+    double getTime() const;
+    double getDeltaTime() const;
 
     void swapBuffers() const;
     void pollEvents() const;
@@ -20,8 +21,11 @@ public:
     void processInput();
     void close();
 
-    void process(function<void()> callback);
+    void process(function<void(double deltaTime)> callback);
 
 private:
     GLFWwindow* _window;
+
+    double _deltaTime;
+    double _lastTime;
 };

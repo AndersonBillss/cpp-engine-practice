@@ -31,6 +31,8 @@ Window::Window(int width, int height, const char* title){
     glfwMakeContextCurrent(_window);
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
 
+    _lastTime = getTime();
+
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW\n";
@@ -46,8 +48,11 @@ Window::~Window(){
 bool Window::shouldClose() const {
     return glfwWindowShouldClose(_window);
 }
-double Window::getTime() {
+double Window::getTime() const {
     return glfwGetTime();
+}
+double Window::getDeltaTime() const {
+    return _deltaTime;
 }
 
 void Window::swapBuffers() const {
@@ -67,10 +72,12 @@ void Window::close() {
     glfwSetWindowShouldClose(_window, true);
 }
 
-void Window::process(function<void()> callback) {
+void Window::process(function<void(double deltaTime)> callback) {
+    _deltaTime = getTime() - _lastTime;
+    _lastTime = getTime();
     processInput();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    callback();
+    callback(_deltaTime);
     swapBuffers();
     pollEvents();
 }

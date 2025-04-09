@@ -35,7 +35,7 @@ int main() {
     texture.addTexture("opengl-1-logo-png-transparent.png", "texture2");
 
     Shader::Uniform<float> shaderAngle(shader, "angle");
-    auto process = [&]() {
+    auto process = [&](double deltaTime) {
         shader.use();
         mesh.use();
         texture.use();
