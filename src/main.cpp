@@ -44,6 +44,7 @@ int main() {
         mesh.use();
         texture.use();
 
+        // Input handling
         if(window.isHeld(Key::Up)){
             logoOpacity += deltaTime * .75f;
             shaderLogoOpacity.set(logoOpacity);
@@ -51,6 +52,9 @@ int main() {
         if(window.isHeld(Key::Down)){
             logoOpacity -= deltaTime * .75f;
             shaderLogoOpacity.set(logoOpacity);
+        }
+        if (window.isJustPressed(Key::Escape)){
+            window.close();
         }
 
         float time = (float)window.getTime();

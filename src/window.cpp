@@ -153,10 +153,7 @@ static const unordered_map<Key, int> keyToGLFW {
 
 
 // Set the viewport to change with window resizing
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) { glViewport(0, 0, width, height); }
 Window::Window(int width, int height, const char* title){
     // Initialize GLFW
     if (!glfwInit()) {
@@ -209,7 +206,6 @@ bool Window::isJustPressed(Key key) const {
     return _currentHeldKeys.find(key) != _currentHeldKeys.end() &&
            _lastFrameHeldKeys.find(key) == _lastFrameHeldKeys.end();
 }
-
 bool Window::isHeld(Key key) const {
     return _currentHeldKeys.find(key) != _currentHeldKeys.end() &&
            _lastFrameHeldKeys.find(key) != _lastFrameHeldKeys.end();
@@ -220,19 +216,6 @@ bool Window::isJustReleased(Key key) const {
            _lastFrameHeldKeys.find(key) != _lastFrameHeldKeys.end();
 }
 
-void Window::swapBuffers() const {
-    glfwSwapBuffers(_window);
-}
-void Window::pollEvents() const {
-    glfwPollEvents();
-}
-void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-void Window::processInput() {
-    if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(_window, true);
-}
 void Window::close() {
     glfwSetWindowShouldClose(_window, true);
 }
@@ -240,7 +223,6 @@ void Window::close() {
 void Window::process(function<void(double deltaTime)> callback) {
     _deltaTime = getTime() - _lastTime;
     _lastTime = getTime();
-    processInput();
     _lastFrameHeldKeys = _currentHeldKeys;
     _currentHeldKeys.clear();
 
@@ -252,6 +234,6 @@ void Window::process(function<void(double deltaTime)> callback) {
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     callback(_deltaTime);
-    swapBuffers();
-    pollEvents();
+    glfwSwapBuffers(_window);
+    glfwPollEvents();
 }

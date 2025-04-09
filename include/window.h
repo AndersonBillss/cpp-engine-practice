@@ -44,20 +44,16 @@ public:
     bool isHeld(Key key) const;
     bool isJustReleased(Key key) const;
 
-    void swapBuffers() const;
-    void pollEvents() const;
-    void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-    void processInput();
     void close();
-
+    
     void process(function<void(double deltaTime)> callback);
-
+    
 private:
     GLFWwindow* _window;
-
+    
     double _deltaTime;
     double _lastTime;
-
+    
     unordered_set<Key> _currentHeldKeys;
     unordered_set<Key> _lastFrameHeldKeys;
 };
