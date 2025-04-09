@@ -8,14 +8,14 @@ using std::vector;
 
 int main() {
     vector<unsigned int> attributes = {
-            3,                   3,                  2
+            3,                   2
     };
-         // Vertices          // Colors           // Textures
+         // Vertices          // Textures
     vector<float> rectangleVertices = {
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f
+         0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f
     };  
     vector<unsigned int> rectangleIndices = {
         0, 1, 3, // first triangle
@@ -35,10 +35,23 @@ int main() {
     texture.addTexture("opengl-1-logo-png-transparent.png", "texture2");
 
     Shader::Uniform<float> shaderAngle(shader, "angle");
+    Shader::Uniform<float> shaderLogoOpacity(shader, "logoOpacity");
+    float logoOpacity = .5f;
+    shaderLogoOpacity.set(logoOpacity);
+
     auto process = [&](double deltaTime) {
         shader.use();
         mesh.use();
         texture.use();
+
+        if(window.isHeld(Key::Up)){
+            logoOpacity += deltaTime * .75f;
+            shaderLogoOpacity.set(logoOpacity);
+        }
+        if(window.isHeld(Key::Down)){
+            logoOpacity -= deltaTime * .75f;
+            shaderLogoOpacity.set(logoOpacity);
+        }
 
         float time = (float)window.getTime();
         float angle = time;
