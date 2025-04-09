@@ -2,6 +2,11 @@
 #include <iostream>
 using std::string, std::cerr;
 
+// Set the viewport to change with window resizing
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
 Window::Window(int width, int height, const char* title){
     // Initialize GLFW
     if (!glfwInit()) {
@@ -24,6 +29,8 @@ Window::Window(int width, int height, const char* title){
     }
     // Initialize GLEW
     glfwMakeContextCurrent(_window);
+    glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
+
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW\n";
@@ -67,5 +74,3 @@ void Window::process(function<void()> callback) {
     swapBuffers();
     pollEvents();
 }
-
-
