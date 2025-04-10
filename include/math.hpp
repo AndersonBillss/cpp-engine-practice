@@ -1,4 +1,5 @@
 #pragma once
+#include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -40,4 +41,8 @@ namespace Math {
     inline const float* valuePtr(const Mat4& mat) {
         return glm::value_ptr(mat);
     }
+
+    inline const double pi = M_PI;
+    inline const double degToRad = pi/180;
+    inline const double radToDeg = 180/pi;
 }

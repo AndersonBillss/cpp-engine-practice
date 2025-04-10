@@ -5,8 +5,9 @@ using std::ifstream;
 using std::stringstream;
 #include <iostream>
 using std::cerr;
+#include "core.hpp"
 
-Mesh::Mesh( const vector<float>& vertices, const vector<unsigned int>& indices, const vector<unsigned int>& attributes){
+Mesh::Mesh(const vector<float>& vertices, const vector<unsigned int>& attributes, const vector<unsigned int>& indices){
     glGenVertexArrays(1, &_VAO);
     glGenBuffers(1, &_VBO);
     glGenBuffers(1, &_EBO);
@@ -17,11 +18,15 @@ Mesh::Mesh( const vector<float>& vertices, const vector<unsigned int>& indices, 
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-
+    if(indices.size() > 0){
+        _indexCount = indices.size();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    }
+    
     int attributesSize = 0;
     for(unsigned int attr : attributes) attributesSize += attr;
+    _vertexCount = vertices.size() / attributesSize;
 
     // Enable and define each vertex attribute
     int offset = 0;
@@ -41,5 +46,9 @@ Mesh::~Mesh(){
 
 void Mesh::use(){
     glBindVertexArray(_VAO);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    if (_indexCount > 0) {
+        glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, 0);
+    } else if (_vertexCount > 0) {
+        glDrawArrays(GL_TRIANGLES, 0, _vertexCount);
+    }
 }
