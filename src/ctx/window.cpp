@@ -1,4 +1,4 @@
-#include "ctx/window.h"
+#include "ctx/window.hpp"
 #include <iostream>
 using std::cerr;
 

@@ -1,12 +1,12 @@
 #include <vector>
 using std::vector;
 
-#include "ctx/mesh.h"
-#include "ctx/window.h"
-#include "ctx/shader.h"
-#include "ctx/texture2D.h"
+#include "ctx/mesh.hpp"
+#include "ctx/window.hpp"
+#include "ctx/shader.hpp"
+#include "ctx/texture2D.hpp"
 
-#include "core.h"
+#include "core.hpp"
 
 int main() {
     vector<unsigned int> attributes = {

@@ -1,12 +1,11 @@
-#include "ctx/shader.h"
+#include "math.hpp"
+#include "ctx/shader.hpp"
 #include <fstream>  
 using std::ifstream;
 #include <sstream>
 using std::stringstream;
 #include <iostream>
 using std::cerr;
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(string vertexPath, string fragmentPath){
     string vertexShaderSource = _readFileData("src\\shaders\\" + vertexPath);

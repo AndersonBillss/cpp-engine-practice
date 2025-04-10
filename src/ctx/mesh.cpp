@@ -1,4 +1,4 @@
-#include "ctx/mesh.h"
+#include "ctx/mesh.hpp"
 #include <fstream>
 using std::ifstream;
 #include <sstream>

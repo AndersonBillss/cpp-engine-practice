@@ -4,7 +4,7 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#include "shader.h"
+#include "shader.hpp"
 
 class Texture2D {
 public:

@@ -1,5 +1,5 @@
 #pragma once
-#include "mesh.h"
+#include "mesh.hpp"
 #include <GLFW/glfw3.h>
 #include <string>
 using std::string;

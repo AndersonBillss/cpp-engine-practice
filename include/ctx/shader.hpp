@@ -1,11 +1,10 @@
 #pragma once
+#include "math.hpp"
 #include <string>
 #include <GL/glew.h>
 using std::string;
 #include <iostream>
 using std::cerr;
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 
 class Shader{
@@ -31,7 +30,7 @@ public:
     
     void _addShaders(const char* vertexShaderSource, const char* fragmentShaderSource);
     string _readFileData(const string& filePath);
-    
+
     template <class T>
     friend class Uniform;
 };
@@ -45,10 +44,10 @@ Shader::Uniform<T>::Uniform(const Shader& shader, const string& name) {
         std::is_same<T, float>::value ||
         std::is_same<T, int>::value ||
         std::is_same<T, bool>::value ||
-        std::is_same<T, glm::vec2>::value ||
-        std::is_same<T, glm::vec3>::value ||
-        std::is_same<T, glm::vec4>::value ||
-        std::is_same<T, glm::mat4>::value,
+        std::is_same<T, Math::Vec2>::value ||
+        std::is_same<T, Math::Vec3>::value ||
+        std::is_same<T, Math::Vec4>::value ||
+        std::is_same<T, Math::Mat4>::value,
         "Unsupported uniform type"
     );
     _location = glGetUniformLocation(shader._shaderProgram, name.c_str());
@@ -72,28 +71,28 @@ inline void Shader::Uniform<bool>::set(bool value) const {
     glUniform1i(_location, static_cast<int>(value));
 }
 
-// Specialization for glm::vec2
+// Specialization for Math::vec2
 template <>
-inline void Shader::Uniform<glm::vec2>::set(glm::vec2 value) const {
+inline void Shader::Uniform<Math::Vec2>::set(Math::Vec2 value) const {
     glUniform2f(_location, value.x, value.y);
 }
 
-// Specialization for glm::vec3
+// Specialization for Math::vec3
 template <>
-inline void Shader::Uniform<glm::vec3>::set(glm::vec3 value) const {
+inline void Shader::Uniform<Math::Vec3>::set(Math::Vec3 value) const {
     glUniform3f(_location, value.x, value.y, value.z);
 }
 
-// Specialization for glm::vec4
+// Specialization for Math::vec4
 template <>
-inline void Shader::Uniform<glm::vec4>::set(glm::vec4 value) const {
+inline void Shader::Uniform<Math::Vec4>::set(Math::Vec4 value) const {
     glUniform4f(_location, value.x, value.y, value.z, value.w);
 }
 
-// Specialization for glm::mat4
+// Specialization for Math::mat4
 template <>
-inline void Shader::Uniform<glm::mat4>::set(glm::mat4 value) const {
-    glUniformMatrix4fv(_location, 1, GL_FALSE, glm::value_ptr(value));
+inline void Shader::Uniform<Math::Mat4>::set(Math::Mat4 value) const {
+    glUniformMatrix4fv(_location, 1, GL_FALSE, Math::valuePtr(value));
 }
 
 template <class T>
