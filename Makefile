@@ -11,7 +11,7 @@ EXE_SUFFIX := .exe
 
 # Directories
 SRC_DIR = src
-SUB_DIR = ctx test
+SUB_DIR = ctx
 SHADER_DIR = shaders
 ASSET_DIR = assets
 OBJ_DIR = obj
