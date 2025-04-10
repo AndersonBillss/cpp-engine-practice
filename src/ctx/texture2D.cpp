@@ -1,5 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "texture2D.h"
+#include "ctx/texture2D.h"
 #include "lib/stb_image.h"
 #include <GL/glew.h>
 #include <iostream>

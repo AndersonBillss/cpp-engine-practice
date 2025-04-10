@@ -1,9 +1,11 @@
 #include <vector>
 using std::vector;
 
-#include "window.h"
-#include "shader.h"
-#include "texture2D.h"
+#include "ctx/mesh.h"
+#include "ctx/window.h"
+#include "ctx/shader.h"
+#include "ctx/texture2D.h"
+
 #include "core.h"
 
 int main() {
