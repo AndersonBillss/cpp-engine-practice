@@ -146,9 +146,9 @@ int main() {
             pitch = -89.0f;
 
         Math::Vec3 direction;
-        direction.x = cos(Math::degToRad * yaw);
+        direction.x = cos(Math::degToRad * yaw) * cos(Math::degToRad * pitch);
         direction.y = sin(Math::degToRad * pitch);
-        direction.z = sin(Math::degToRad * yaw);
+        direction.z = sin(Math::degToRad * yaw) * cos(Math::degToRad * pitch);
         cameraFront = Math::normalize(direction);
 
         const float cameraSpeed = 5.0f * deltaTime;
