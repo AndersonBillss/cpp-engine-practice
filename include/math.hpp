@@ -37,6 +37,14 @@ namespace Math {
         return glm::lookAt(eye, center, up);
     }
 
+    inline Vec3 normalize(const Vec3& vector){
+        return glm::normalize(vector);
+    }
+
+    inline Vec3 cross(const Vec3& vector1, const Vec3& vector2){
+        return glm::cross(vector1, vector2);
+    }
+
     // Convert to pointer for passing to graphics APIs
     inline const float* valuePtr(const Mat4& mat) {
         return glm::value_ptr(mat);

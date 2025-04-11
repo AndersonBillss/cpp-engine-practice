@@ -30,6 +30,11 @@ enum class Key {
     LeftControl, RightControl,
     LeftAlt, RightAlt,
 };
+enum class MouseButton {
+    Left,
+    Right,
+    Middle,
+};
 
 class Window {
 public:
@@ -40,14 +45,30 @@ public:
     double getTime() const;
     double getDeltaTime() const;
 
+    // Keyboard input handling
     bool isJustPressed(Key key) const;
     bool isHeld(Key key) const;
     bool isJustReleased(Key key) const;
+    // Overloads for mouse buttons
+    bool isJustPressed(MouseButton btn) const;
+    bool isHeld(MouseButton btn) const;
+    bool isJustReleased(MouseButton btn) const;
+
+    double getMouseX() const; 
+    double getMouseY() const; 
+    double getMouseChangeX() const; 
+    double getMouseChangeY() const; 
+    double getScrollChangeX() const; 
+    double getScrollChangeY() const; 
+    
+    void hideCursor();
+    void showCursor();
 
     void close();
     
     void process(function<void(double deltaTime)> callback);
-    
+
+    friend void scroll_callback(GLFWwindow* glfwWindow, double xoffset, double yoffset);
 private:
     GLFWwindow* _window;
     
@@ -56,4 +77,15 @@ private:
     
     unordered_set<Key> _currentHeldKeys;
     unordered_set<Key> _lastFrameHeldKeys;
+    
+    double _lastMouseX = 0.0;
+    double _lastMouseY = 0.0;
+    double _mouseX = 0.0;
+    double _mouseY = 0.0;
+    
+    double _scrollChangeX = 0.0;
+    double _scrollChangeY = 0.0;
+
+    unordered_set<MouseButton> _currentHeldMouseButtons;
+    unordered_set<MouseButton> _lastFrameHeldMouseButtons;
 };

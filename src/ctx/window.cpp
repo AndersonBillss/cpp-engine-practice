@@ -154,6 +154,14 @@ static const unordered_map<Key, int> keyToGLFW {
 
 // Set the viewport to change with window resizing
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) { glViewport(0, 0, width, height); }
+void scroll_callback(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
+    Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+    if (window != nullptr) {
+        window->_scrollChangeX += xoffset;
+        window->_scrollChangeY += yoffset;
+    }
+}
+
 Window::Window(int width, int height, const char* title){
     // Initialize GLFW
     if (!glfwInit()) {
@@ -167,6 +175,7 @@ Window::Window(int width, int height, const char* title){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     _window = glfwCreateWindow(width, height, title, NULL, NULL);
+    glfwSetWindowUserPointer(_window, this);
 
     // Create the window
     if (!_window) {
@@ -177,6 +186,7 @@ Window::Window(int width, int height, const char* title){
     // Initialize GLEW
     glfwMakeContextCurrent(_window);
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
+    glfwSetScrollCallback(_window, scroll_callback);
 
     _lastTime = getTime();
 
@@ -210,10 +220,36 @@ bool Window::isHeld(Key key) const {
     return _currentHeldKeys.find(key) != _currentHeldKeys.end() &&
            _lastFrameHeldKeys.find(key) != _lastFrameHeldKeys.end();
 }
-
 bool Window::isJustReleased(Key key) const {
     return _currentHeldKeys.find(key) == _currentHeldKeys.end() &&
            _lastFrameHeldKeys.find(key) != _lastFrameHeldKeys.end();
+}
+
+bool Window::isJustPressed(MouseButton btn) const {
+    return _currentHeldMouseButtons.find(btn) != _currentHeldMouseButtons.end() &&
+           _lastFrameHeldMouseButtons.find(btn) == _lastFrameHeldMouseButtons.end();
+}
+bool Window::isHeld(MouseButton btn) const {
+    return _currentHeldMouseButtons.find(btn) != _currentHeldMouseButtons.end() &&
+           _lastFrameHeldMouseButtons.find(btn) != _lastFrameHeldMouseButtons.end();
+}
+bool Window::isJustReleased(MouseButton btn) const {
+    return _currentHeldMouseButtons.find(btn) == _currentHeldMouseButtons.end() &&
+           _lastFrameHeldMouseButtons.find(btn) != _lastFrameHeldMouseButtons.end();
+}
+
+double Window::getMouseX() const {return _mouseX;}; 
+double Window::getMouseY() const {return _mouseY;}; 
+double Window::getMouseChangeX() const {return _lastMouseX - _mouseX;}; 
+double Window::getMouseChangeY() const {return _lastMouseY - _mouseY;}; 
+double Window::getScrollChangeX() const {return _scrollChangeX;}; 
+double Window::getScrollChangeY() const {return _scrollChangeY;}; 
+
+void Window::hideCursor(){
+    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+}
+void Window::showCursor(){
+    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
 }
 
 void Window::close() {
@@ -225,15 +261,26 @@ void Window::process(function<void(double deltaTime)> callback) {
     _lastTime = getTime();
     _lastFrameHeldKeys = _currentHeldKeys;
     _currentHeldKeys.clear();
-
     for (Key key : allKeys) {
         int state = glfwGetKey(_window, keyToGLFW.at(key));
-        if (state == GLFW_PRESS || state == GLFW_REPEAT) {
-            _currentHeldKeys.insert(key);
-        }
+        if (state == GLFW_PRESS || state == GLFW_REPEAT)_currentHeldKeys.insert(key);
     }
+
+    _lastFrameHeldMouseButtons = _currentHeldMouseButtons;
+    _currentHeldMouseButtons.clear();
+    if(glfwGetMouseButton(_window, GLFW_MOUSE_BUTTON_LEFT)) _currentHeldMouseButtons.insert(MouseButton::Left);
+    if(glfwGetMouseButton(_window, GLFW_MOUSE_BUTTON_MIDDLE)) _currentHeldMouseButtons.insert(MouseButton::Middle);
+    if(glfwGetMouseButton(_window, GLFW_MOUSE_BUTTON_RIGHT)) _currentHeldMouseButtons.insert(MouseButton::Right);
+
+    _lastMouseX = _mouseX;
+    _lastMouseY = _mouseY;
+    glfwGetCursorPos(_window, &_mouseX, &_mouseY);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     callback(_deltaTime);
+    // Clear the scroll change immediately after the callback
+    _scrollChangeX = 0.0;
+    _scrollChangeY = 0.0;
     glfwSwapBuffers(_window);
     glfwPollEvents();
 }
