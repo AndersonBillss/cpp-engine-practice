@@ -37,7 +37,7 @@ void Texture2D::addTexture(const string& filePath, const string& textureName) {
     
     int width, height, nrChannels;
 
-    unsigned char *data = stbi_load(("src\\assets\\" + filePath).c_str(), &width, &height, &nrChannels, 0); 
+    unsigned char *data = stbi_load((filePath).c_str(), &width, &height, &nrChannels, 0); 
     if(data){
         GLenum format;
         if (nrChannels == 1)

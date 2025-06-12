@@ -8,8 +8,8 @@ using std::stringstream;
 using std::cerr;
 
 Shader::Shader(string vertexPath, string fragmentPath){
-    string vertexShaderSource = _readFileData("src\\shaders\\" + vertexPath);
-    string fragmentShaderSource = _readFileData("src\\shaders\\" + fragmentPath);
+    string vertexShaderSource = _readFileData(vertexPath);
+    string fragmentShaderSource = _readFileData(fragmentPath);
     _addShaders(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
 }
 Shader::~Shader(){
