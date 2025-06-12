@@ -12,15 +12,17 @@ EXE_SUFFIX := .exe
 # Directories
 SRC_DIR = src
 SUB_DIR = ctx
-SHADER_DIR = shaders
-ASSET_DIR = assets
-OBJ_DIR = obj
-BIN_DIR = bin
+OUT_DIR = output
+
+SHADER_DIR = $(SRC_DIR)/shaders
+ASSET_DIR = $(SRC_DIR)/assets
+OBJ_DIR = $(OUT_DIR)/obj
+BIN_DIR = $(OUT_DIR)/bin
 
 
-SRC_SHADER_DIR = $(SRC_DIR)/$(SHADER_DIR)
+SRC_SHADER_DIR = $(SHADER_DIR)
 BIN_SHADER_DIR = $(BIN_DIR)/$(SHADER_DIR)
-SRC_ASSET_DIR = $(SRC_DIR)/$(ASSET_DIR)
+SRC_ASSET_DIR = $(ASSET_DIR)
 BIN_ASSET_DIR = $(BIN_DIR)/$(ASSET_DIR)
 
 SRC = $(foreach folder, $(SUB_DIR), $(wildcard $(SRC_DIR)/$(folder)/*.cpp))
@@ -37,7 +39,7 @@ run: build
 	$(BIN_DIR)/$(TARGET)$(EXE_SUFFIX)
 
 # Build the executable
-build: $(BIN_DIR) $(SUB_DIR) $(OBJ) copy_shaders copy_assets
+build: $(OUT_DIR) $(BIN_DIR) $(SUB_DIR) $(OBJ) copy_shaders copy_assets
 	$(CXX) -o $(BIN_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ) $(BINFLAGS)
 
 # Compile C++ files to .o files inside obj/
@@ -54,6 +56,9 @@ $(OBJ_DIR):
 $(BIN_DIR):
 	mkdir $(BIN_DIR)
 
+$(OUT_DIR):
+	mkdir -p $(OUT_DIR)
+
 # Copy GLSL shaders to bin/
 copy_shaders: $(BIN_SHADER_DIR)
 	cp $(SRC_SHADER_DIR)/*.glsl $(BIN_SHADER_DIR)/
@@ -69,4 +74,4 @@ $(BIN_ASSET_DIR):
 
 # Clean compiled files but keep directories
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -rf $(OUT_DIR)
