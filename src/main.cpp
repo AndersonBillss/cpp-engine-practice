@@ -2,12 +2,13 @@
 using std::vector;
 
 #include "math.hpp"
+#include "core.hpp"
+
 #include "ctx/mesh.hpp"
 #include "ctx/window.hpp"
 #include "ctx/shader.hpp"
 #include "ctx/texture2D.hpp"
 
-#include "core.hpp"
 
 int main()
 {

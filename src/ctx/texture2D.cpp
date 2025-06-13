@@ -1,6 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "ctx/texture2D.hpp"
-#include "lib/stb_image.h"
+#include "texture2D.hpp"
+#include "../../include/lib/stb_image.h"
 #include <GL/glew.h>
 #include <iostream>
 using std::cerr, std::endl;

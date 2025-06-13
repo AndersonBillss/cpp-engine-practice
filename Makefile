@@ -7,25 +7,20 @@ BINFLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32
 
 # Executable Name
 TARGET = engine
-EXE_SUFFIX := .exe
+EXE_SUFFIX = .exe
 
 # Directories
 SRC_DIR = src
 ASSET_DIR = assets
-SUB_DIR = ctx
+SRC_FILES = $(shell find $(src) -name '*.cpp')
 
 BUILD_DIR = obj
 DIST_DIR = dist
 
-SRC = $(foreach folder, $(SUB_DIR), $(wildcard $(SRC_DIR)/$(folder)/*.cpp))
-SRC += $(wildcard $(SRC_DIR)/*.cpp)
+OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRC_FILES))
 
-OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRC))
-
-# Default target
 all: build run
 
-# Run the executable
 run: build
 	@echo "Running $(TARGET)..."
 	$(DIST_DIR)/$(TARGET)$(EXE_SUFFIX)

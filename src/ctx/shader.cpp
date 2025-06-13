@@ -1,5 +1,5 @@
-#include "math.hpp"
-#include "ctx/shader.hpp"
+#include "../math.hpp"
+#include "shader.hpp"
 #include <fstream>  
 using std::ifstream;
 #include <sstream>

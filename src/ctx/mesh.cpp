@@ -1,11 +1,11 @@
-#include "ctx/mesh.hpp"
+#include "mesh.hpp"
 #include <fstream>
 using std::ifstream;
 #include <sstream>
 using std::stringstream;
 #include <iostream>
 using std::cerr;
-#include "core.hpp"
+#include "../core.hpp"
 
 Mesh::Mesh(const vector<float>& vertices, const vector<unsigned int>& attributes, const vector<unsigned int>& indices){
     glGenVertexArrays(1, &_VAO);
