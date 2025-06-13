@@ -12,12 +12,13 @@ EXE_SUFFIX = .exe
 # Directories
 SRC_DIR = src
 ASSET_DIR = assets
-SRC_FILES = $(shell find $(src) -name '*.cpp')
+SRC_FILES = $(shell find $(SRC_DIR) -name '*.cpp')
 
 BUILD_DIR = obj
 DIST_DIR = dist
 
-OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRC_FILES))
+OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRC_FILES))
+DEP := $(OBJ:.o=.d)
 
 all: build run
 
@@ -30,7 +31,7 @@ build: prepare_build_dirs $(OBJ) $(DIST_DIR) copy_assets
 	$(CXX) -o $(DIST_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ) $(BINFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(OBJFLAGS) -c $< -o $@
+	$(CXX) $(OBJFLAGS) -MMD -c $< -o $@
 
 copy_assets: $(DIST_DIR)
 	mkdir -p $(DIST_DIR)/$(ASSET_DIR)
