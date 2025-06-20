@@ -20,3 +20,8 @@ Math::Vec3 Camera::getUp()
 {
     return Math::Vec3(0.0f, 1.0f, 0.0f);
 }
+
+Math::Vec3 Camera::getRight()
+{
+    return Math::normalize(Math::cross(getFront(), getUp()));
+}

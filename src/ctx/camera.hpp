@@ -17,4 +17,5 @@ public:
 
     Math::Vec3 getFront();
     Math::Vec3 getUp();
+    Math::Vec3 getRight();
 };

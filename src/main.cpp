@@ -10,7 +10,6 @@ using std::vector;
 #include "ctx/texture2D.hpp"
 #include "ctx/camera.hpp"
 
-
 int main()
 {
     vector<unsigned int> attributes = {
@@ -76,11 +75,10 @@ int main()
 
     Window window(800, 600, "Rotating Cubes");
     window.hideCursor();
+    Camera cam;
     Mesh mesh(vertices, attributes);
     Shader shader(vertexShaderPath, fragmentShaderPath);
     Texture2D texture(shader);
-    Camera cam;
-
     texture.useMipmaps();
     texture.useBilinearFiltering();
     texture.addTexture("assets/textures/wall.jpg", "texture1");
@@ -144,25 +142,26 @@ int main()
         if (cam.pitch < -89.0f)
             cam.pitch = -89.0f;
 
-
         const float cameraSpeed = 5.0f * deltaTime;
         float calculatedSpeed = cameraSpeed;
 
-        
         Math::Vec3 camFront = cam.getFront();
         Math::Vec3 camUp = cam.getUp();
-
-        if (window.isHeld(Key::LeftShift))
+        Math::Vec3 camRight = cam.getRight();
+        if (window.isHeld(Key::LeftControl))
             calculatedSpeed = cameraSpeed * 3;
         if (window.isHeld(Key::W))
             cam.position += calculatedSpeed * camFront;
         if (window.isHeld(Key::S))
             cam.position -= calculatedSpeed * camFront;
         if (window.isHeld(Key::A))
-            cam.position -= Math::normalize(Math::cross(camFront, camUp)) * calculatedSpeed;
+            cam.position -= calculatedSpeed * camRight;
         if (window.isHeld(Key::D))
-            cam.position += Math::normalize(Math::cross(camFront, camUp)) * calculatedSpeed;
-
+            cam.position += calculatedSpeed * camRight;
+        if (window.isHeld(Key::Space))
+            cam.position += calculatedSpeed * camUp;
+        if (window.isHeld(Key::LeftShift))
+            cam.position -= calculatedSpeed * camUp;
 
         for (unsigned int i = 0; i < 10; i++)
         {
