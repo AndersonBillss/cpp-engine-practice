@@ -8,6 +8,7 @@ using std::vector;
 #include "ctx/window.hpp"
 #include "ctx/shader.hpp"
 #include "ctx/texture2D.hpp"
+#include "ctx/camera.hpp"
 
 
 int main()
@@ -78,6 +79,8 @@ int main()
     Mesh mesh(vertices, attributes);
     Shader shader(vertexShaderPath, fragmentShaderPath);
     Texture2D texture(shader);
+    Camera cam;
+
     texture.useMipmaps();
     texture.useBilinearFiltering();
     texture.addTexture("assets/textures/wall.jpg", "texture1");
@@ -103,17 +106,6 @@ int main()
     float logoOpacity = .5f;
     shaderLogoOpacity.set(logoOpacity);
 
-    // Camera
-    Math::Vec3 cameraPos(0.0f, 0.0f, 3.0f);
-    Math::Vec3 cameraTarget(0.0f, 0.0f, 0.0f);
-    Math::Vec3 cameraDirection = Math::normalize(cameraPos - cameraTarget);
-    Math::Vec3 up = Math::Vec3(0.0f, 1.0f, 0.0f);
-    Math::Vec3 cameraRight = Math::normalize(Math::cross(up, cameraDirection));
-    Math::Vec3 cameraUp = Math::Vec3(0.0f, 1.0f, 0.0f);
-    Math::Vec3 cameraFront = Math::Vec3(0.0f, 0.0f, -1.0f);
-
-    float pitch = 0;
-    float yaw = -90.0f;
     bool firstMouse = true;
     auto process = [&](double deltaTime)
     {
@@ -144,32 +136,33 @@ int main()
         }
         else
         {
-            yaw -= window.getMouseChangeX() * lookSpeedX;
-            pitch += window.getMouseChangeY() * lookSpeedY;
+            cam.yaw -= window.getMouseChangeX() * lookSpeedX;
+            cam.pitch += window.getMouseChangeY() * lookSpeedY;
         }
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
+        if (cam.pitch > 89.0f)
+            cam.pitch = 89.0f;
+        if (cam.pitch < -89.0f)
+            cam.pitch = -89.0f;
 
-        Math::Vec3 direction;
-        direction.x = cos(Math::degToRad * yaw) * cos(Math::degToRad * pitch);
-        direction.y = sin(Math::degToRad * pitch);
-        direction.z = sin(Math::degToRad * yaw) * cos(Math::degToRad * pitch);
-        cameraFront = Math::normalize(direction);
 
         const float cameraSpeed = 5.0f * deltaTime;
         float calculatedSpeed = cameraSpeed;
+
+        
+        Math::Vec3 camFront = cam.getFront();
+        Math::Vec3 camUp = cam.getUp();
+
         if (window.isHeld(Key::LeftShift))
             calculatedSpeed = cameraSpeed * 3;
         if (window.isHeld(Key::W))
-            cameraPos += calculatedSpeed * cameraFront;
+            cam.position += calculatedSpeed * camFront;
         if (window.isHeld(Key::S))
-            cameraPos -= calculatedSpeed * cameraFront;
+            cam.position -= calculatedSpeed * camFront;
         if (window.isHeld(Key::A))
-            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * calculatedSpeed;
+            cam.position -= Math::normalize(Math::cross(camFront, camUp)) * calculatedSpeed;
         if (window.isHeld(Key::D))
-            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * calculatedSpeed;
+            cam.position += Math::normalize(Math::cross(camFront, camUp)) * calculatedSpeed;
+
 
         for (unsigned int i = 0; i < 10; i++)
         {
@@ -184,12 +177,7 @@ int main()
             mesh.use();
         }
 
-        Math::Mat4 view(1.0f);
-        const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
-        view = Math::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        shaderView.set(view);
+        shaderView.set(cam.getView());
     };
 
     // Main loop

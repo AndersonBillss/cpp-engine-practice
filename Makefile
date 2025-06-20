@@ -2,8 +2,9 @@
 CXX = g++
 
 # Compiler Flags
-OBJFLAGS = -IC:/msys64/mingw64/include -Iinclude -Wall
-BINFLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32
+# OBJFLAGS = -IC:/msys64/mingw64/include -Iinclude -Wall
+# BINFLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32
+CXX_FLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32 -IC:/msys64/mingw64/include -Iinclude -Wall
 
 # Executable Name
 TARGET = engine
@@ -28,10 +29,10 @@ run: build
 
 # Build the executable
 build: prepare_build_dirs $(OBJ) $(DIST_DIR) copy_assets
-	$(CXX) -o $(DIST_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ) $(BINFLAGS)
+	$(CXX) -o $(DIST_DIR)/$(TARGET)$(EXE_SUFFIX) $(OBJ) $(CXX_FLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(OBJFLAGS) -MMD -c $< -o $@
+	$(CXX) $(CXX_FLAGS) -MMD -c $< -o $@
 
 copy_assets: $(DIST_DIR)
 	mkdir -p $(DIST_DIR)/$(ASSET_DIR)
