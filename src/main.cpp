@@ -8,7 +8,7 @@ using std::vector;
 #include "ctx/window.hpp"
 #include "ctx/shader.hpp"
 #include "ctx/texture2D.hpp"
-#include "ctx/camera.hpp"
+#include "cameraController.hpp"
 
 int main()
 {
@@ -75,7 +75,6 @@ int main()
 
     Window window(800, 600, "Rotating Cubes");
     window.hideCursor();
-    Camera cam;
     Mesh mesh(vertices, attributes);
     Shader shader(vertexShaderPath, fragmentShaderPath);
     Texture2D texture(shader);
@@ -83,17 +82,18 @@ int main()
     texture.useBilinearFiltering();
     texture.addTexture("assets/textures/wall.jpg", "texture1");
     texture.addTexture("assets/textures/opengl-1-logo-png-transparent.png", "texture2");
-
+    
     // Send matrices to the GPU
     Math::Mat4 model = Math::Mat4(1.0f);
     model = Math::rotate(model, -55.0f * Math::degToRad, Math::Vec3(1.0f, 0.0f, 0.0f));
     Shader::Uniform<Math::Mat4> shaderModel(shader, "model");
     shaderModel.set(model);
-
+    
     Math::Mat4 view = Math::Mat4(1.0f);
     view = Math::translate(view, Math::Vec3(0.0f, 0.0f, -3.0f));
     Shader::Uniform<Math::Mat4> shaderView(shader, "view");
     shaderView.set(view);
+    CameraController camController(&shaderView, &window);
 
     Math::Mat4 projection;
     projection = Math::perspective(45.0f * Math::degToRad, 800.0f / 600.0f, 0.1f, 100.0f);
@@ -104,7 +104,7 @@ int main()
     float logoOpacity = .5f;
     shaderLogoOpacity.set(logoOpacity);
 
-    bool firstMouse = true;
+    // bool firstMouse = true;
     auto process = [&](double deltaTime)
     {
         shader.use();
@@ -126,43 +126,6 @@ int main()
             window.close();
         }
 
-        float lookSpeedX = 0.1f;
-        float lookSpeedY = 0.1f;
-        if (firstMouse)
-        {
-            firstMouse = false;
-        }
-        else
-        {
-            cam.yaw -= window.getMouseChangeX() * lookSpeedX;
-            cam.pitch += window.getMouseChangeY() * lookSpeedY;
-        }
-        if (cam.pitch > 89.0f)
-            cam.pitch = 89.0f;
-        if (cam.pitch < -89.0f)
-            cam.pitch = -89.0f;
-
-        const float cameraSpeed = 5.0f * deltaTime;
-        float calculatedSpeed = cameraSpeed;
-
-        Math::Vec3 camFront = cam.getFront();
-        Math::Vec3 camUp = cam.getUp();
-        Math::Vec3 camRight = cam.getRight();
-        if (window.isHeld(Key::LeftControl))
-            calculatedSpeed = cameraSpeed * 3;
-        if (window.isHeld(Key::W))
-            cam.position += calculatedSpeed * camFront;
-        if (window.isHeld(Key::S))
-            cam.position -= calculatedSpeed * camFront;
-        if (window.isHeld(Key::A))
-            cam.position -= calculatedSpeed * camRight;
-        if (window.isHeld(Key::D))
-            cam.position += calculatedSpeed * camRight;
-        if (window.isHeld(Key::Space))
-            cam.position += calculatedSpeed * camUp;
-        if (window.isHeld(Key::LeftShift))
-            cam.position -= calculatedSpeed * camUp;
-
         for (unsigned int i = 0; i < 10; i++)
         {
             // calculate the model matrix for each object and pass it to shader before drawing
@@ -176,7 +139,7 @@ int main()
             mesh.use();
         }
 
-        shaderView.set(cam.getView());
+        camController.process(deltaTime);
     };
 
     // Main loop

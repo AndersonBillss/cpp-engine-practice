@@ -2,8 +2,6 @@
 CXX = g++
 
 # Compiler Flags
-# OBJFLAGS = -IC:/msys64/mingw64/include -Iinclude -Wall
-# BINFLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32
 CXX_FLAGS = -LC:/msys64/mingw64/lib -lglew32 -lglfw3 -lopengl32 -IC:/msys64/mingw64/include -Iinclude -Wall
 
 # Executable Name
